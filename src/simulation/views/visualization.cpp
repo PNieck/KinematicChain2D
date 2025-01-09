@@ -13,5 +13,7 @@ Visualization::Visualization(const int xResolution, const int yResolution)
 
 void Visualization::Render() const
 {
+    ImGui::Begin(WindowName());
 
+    ImGui::End();
 }

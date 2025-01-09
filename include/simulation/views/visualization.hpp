@@ -10,7 +10,7 @@ public:
 
     [[nodiscard]]
     static const char* WindowName()
-        { return "Visualization options"; }
+        { return "Visualization"; }
 
 private:
 

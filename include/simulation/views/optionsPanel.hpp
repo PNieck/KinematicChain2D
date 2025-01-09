@@ -9,6 +9,10 @@ public:
 
     void Render();
 
+    [[nodiscard]]
+    static const char* WindowName()
+        { return "Options"; }
+
 private:
     MainController& controller;
 
