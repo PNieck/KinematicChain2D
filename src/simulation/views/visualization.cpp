@@ -20,7 +20,10 @@ void Visualization::Render() const
     framebuffer.Use();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    chain.Render();
+    sceneShader.Use();
+    sceneShader.SetCoordinateSystem(coordinateSystem);
+    chain.Render(sceneShader);
+    rectanglesRenderer.Render(sceneShader);
 
     Framebuffer::UseDefault();
 

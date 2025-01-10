@@ -1,7 +1,6 @@
 #include "simulation/views/visualization/chain.hpp"
 
 #include "simulation/views/visualization/vertex.hpp"
-#include "simulation/views/visualization/shaders/shadersRepository.hpp"
 
 #include <vector>
 
@@ -16,14 +15,10 @@ void Chain::Update(const PossibleChainStates& states)
 }
 
 
-void Chain::Render() const
+void Chain::Render(const SceneShader& shader) const
 {
     if (!firstConfigurationIsValid && !secondConfigurationIsValid)
         return;
-
-    const auto& shader = ShaderRepository::GetInstance().GetStdShader();
-
-    shader.Use();
 
     if (secondConfigurationIsValid)
         RenderSingleMesh(secondConfiguration, shader, glm::vec4(0.5f, 0.5f, 0.5f, 1.f));
@@ -64,16 +59,11 @@ void Chain::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
     const float l1 = parameters.l1;
     const float l2 = parameters.l2;
 
-    std::vector vertices = {
+    const std::vector vertices = {
         Vertex2D(0.f, 0.f),
         Vertex2D(l1 * Cos(state.alpha), l2 * Sin(state.alpha)),
         Vertex2D(l1 * Cos(state.alpha + state.beta), l2 * Sin(state.alpha + state.beta))
     };
-
-    for (auto& v : vertices) {
-        v.position.x /= coordinateSystem.maxX;
-        v.position.y /= coordinateSystem.maxY;
-    }
 
     const std::vector<uint32_t> indices = { 0, 1, 2 };
 
@@ -81,7 +71,7 @@ void Chain::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
 }
 
 
-void Chain::RenderSingleMesh(const Mesh &mesh, const StdShader &shader, const glm::vec4 &color) {
+void Chain::RenderSingleMesh(const Mesh &mesh, const SceneShader &shader, const glm::vec4 &color) {
     shader.SetColor(color);
     mesh.Use();
     glDrawElements(mesh.GetType(), static_cast<GLsizei>(mesh.GetElementsCnt()), GL_UNSIGNED_INT, nullptr);

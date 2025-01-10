@@ -1,7 +1,9 @@
 #pragma once
 
+#include "visualization/shaders/sceneShader.hpp"
 #include "visualization/framebuffer.hpp"
 #include "visualization/chain.hpp"
+#include "visualization/rectanglesRenderer.hpp"
 
 #include "../model/chainParameters.hpp"
 
@@ -21,6 +23,9 @@ public:
 
 private:
     Framebuffer framebuffer;
+    SceneShader sceneShader;
 
     Chain chain;
+    RectanglesRenderer rectanglesRenderer;
+    CoordinateSystem coordinateSystem;
 };

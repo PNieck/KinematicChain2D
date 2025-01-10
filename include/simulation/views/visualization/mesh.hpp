@@ -47,6 +47,14 @@ public:
         elementsCnt = indices.size();
     }
 
+    template <Vertex v, class Allocator>
+    void UpdateSomeVertices(const std::vector<v, Allocator>& vertices, const size_t startingIndex, const size_t elemsToUpdate)
+    {
+        Use();
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, startingIndex*sizeof(v), sizeof(v) * elemsToUpdate, vertices.data() + startingIndex);
+    }
+
 
     [[nodiscard]]
     size_t GetElementsCnt() const

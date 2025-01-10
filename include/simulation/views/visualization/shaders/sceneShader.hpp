@@ -2,12 +2,14 @@
 
 #include "shader.hpp"
 
+#include "../../../model/coordinateSystem.hpp"
 
-class StdShader: public Shader {
+
+class SceneShader: public Shader {
 public:
-    StdShader():
+    SceneShader():
         Shader(
-            "../../shaders/passThroughShader.vert",
+            "../../shaders/sceneShader.vert",
             "../../shaders/flatColorShader.frag"
         ) {}
 
@@ -16,4 +18,7 @@ public:
 
     void SetColor(const float r, const float g, const float b) const
         { SetVec4("color", r, g, b, 1.f); }
+
+    void SetCoordinateSystem(const CoordinateSystem& coordinateSystem) const
+        { SetVec2("maxCoordinates", coordinateSystem.maxX, coordinateSystem.maxY); }
 };

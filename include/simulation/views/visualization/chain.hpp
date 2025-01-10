@@ -6,7 +6,7 @@
 #include "../../model/possibleChainStates.hpp"
 
 #include "mesh.hpp"
-#include "shaders/stdShader.hpp"
+#include "shaders/sceneShader.hpp"
 
 
 class Chain {
@@ -14,18 +14,13 @@ public:
     void SetParameters(const ChainParameters& params)
         { parameters = params; }
 
-    void SetCoordinateSystem(const CoordinateSystem& system)
-        { coordinateSystem = system; }
-
     void Update(const PossibleChainStates& states);
 
-    void Render() const;
+    void Render(const SceneShader& shader) const;
 
 private:
     ChainParameters parameters;
     ChainState actState;
-
-    CoordinateSystem coordinateSystem;
 
     bool firstConfigurationIsValid = true;
     Mesh firstConfiguration;
@@ -39,5 +34,5 @@ private:
 
     void UpdateSingleMesh(Mesh& mesh, const ChainState& state) const;
 
-    static void RenderSingleMesh(const Mesh& mesh, const StdShader& shader, const glm::vec4& color);
+    static void RenderSingleMesh(const Mesh& mesh, const SceneShader& shader, const glm::vec4& color);
 };
