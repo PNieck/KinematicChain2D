@@ -10,7 +10,7 @@ oldMousePos(0), actMousePos(0)
 }
 
 
-void MouseState::Moved(const int x, const int y)
+void MouseState::Moved(const float x, const float y)
 {
     oldMousePos = actMousePos;
 

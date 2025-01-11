@@ -87,10 +87,9 @@ void Window::InitializeGlad()
 void Window::RunMessageLoop()
 {
     while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-
         controller.Render();
 
+        glfwPollEvents();
         glfwSwapBuffers(window);
     }
 }
@@ -106,7 +105,7 @@ void Window::SizeChangedCallback(GLFWwindow *glfwWindow, const int width, const 
 void Window::MouseMoveCallback(GLFWwindow *glfwWindow, const double xpos, const double ypos)
 {
     auto* window = static_cast<Window *>(glfwGetWindowUserPointer(glfwWindow));
-    window->controller.MouseMoved(static_cast<int>(xpos), static_cast<int>(ypos));
+    window->controller.MouseMoved(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
 

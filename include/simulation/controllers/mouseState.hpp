@@ -14,23 +14,23 @@ class MouseState {
 public:
     MouseState();
 
-    inline void ButtonClicked(const MouseButton button)
+    void ButtonClicked(const MouseButton button)
         { buttonClicked[button] = true; }
-    inline void ButtonReleased(const MouseButton button)
+    void ButtonReleased(const MouseButton button)
         { buttonClicked[button] = false; }
 
     [[nodiscard]]
     bool IsButtonClicked(const MouseButton button) const
         { return buttonClicked[button]; }
 
-    void Moved(int x, int y);
+    void Moved(float x, float y);
 
     [[nodiscard]]
-    glm::ivec2 TranslationGet() const
+    glm::vec2 TranslationGet() const
         { return actMousePos - oldMousePos; }
 
     [[nodiscard]]
-    glm::ivec2 PositionGet() const
+    glm::vec2 PositionGet() const
         { return actMousePos; }
 
 private:
@@ -38,6 +38,6 @@ private:
 
     bool buttonClicked[BUTTON_CNT] = {};
 
-    glm::ivec2 oldMousePos;
-    glm::ivec2 actMousePos;
+    glm::vec2 oldMousePos;
+    glm::vec2 actMousePos;
 };

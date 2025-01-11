@@ -6,7 +6,9 @@
 
 
 MainController::MainController(GLFWwindow *window):
-    optionsPanel(*this), visualization(1280, 920)
+    optionsPanel(*this), visualization(1280, 920),
+    newRectangle(),
+    newRectangleFirstCorner(0.f)
 {
     const auto glsl_version = "#version 410";
     IMGUI_CHECKVERSION();
@@ -49,12 +51,35 @@ void MainController::Render()
 }
 
 
-void MainController::MouseMoved(const int x, const int y)
+void MainController::MouseClicked(const MouseButton button)
+{
+    mouseState.ButtonClicked(button);
+
+    if (button == Left && visualization.IsMouseHovering()) {
+        newRectangleFirstCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+
+        newRectangle = Rectangle(newRectangleFirstCorner, 0.f, 0.f);
+        visualization.AddRectangle(newRectangle);
+    }
+}
+
+
+void MainController::MouseMoved(const float x, const float y)
 {
     mouseState.Moved(x, y);
 
-    if (ImGui::GetIO().WantCaptureMouse)
-        return;
+    if (mouseState.IsButtonClicked(Left) && visualization.IsMouseHovering()) {
+        const glm::vec2 newCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+
+        const Rectangle updatedRectangle(newRectangleFirstCorner, newCorner);
+
+        visualization.EditRectangle(
+            newRectangle,
+            updatedRectangle
+        );
+
+        newRectangle = updatedRectangle;
+    }
 }
 
 
@@ -68,4 +93,17 @@ void MainController::ScrollMoved(const int offset)
     if (val < 0.0f) {
         val = -1.0f / val;
     }
+}
+
+
+glm::vec2 MainController::ScreenPositionToVisualizationScene(const glm::vec2& screenPosition) const
+{
+    glm::vec2 result = screenPosition - visualization.WindowCenter();
+    const auto& [maxX, maxY] = visualization.GetCoordinateSystem();
+
+    result.x /= visualization.WindowWidth() / (maxX * 2.f);
+    result.y /= visualization.WindowHeight() / (maxY * 2.f);
+    result.y = -result.y;
+
+    return result;
 }

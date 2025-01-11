@@ -10,6 +10,9 @@
 #include "../views/visualization.hpp"
 
 #include "../model/model.hpp"
+#include "../model/rectangle.hpp"
+
+#include <tuple>
 
 
 class MainController {
@@ -19,13 +22,12 @@ public:
 
     void Render();
 
-    void MouseClicked(const MouseButton button)
-        { mouseState.ButtonClicked(button); }
+    void MouseClicked(MouseButton button);
 
     void MouseReleased(const MouseButton button)
         { mouseState.ButtonReleased(button); }
 
-    void MouseMoved(int x, int y);
+    void MouseMoved(float x, float y);
     void ScrollMoved(int offset);
 
 private:
@@ -35,5 +37,11 @@ private:
     OptionsPanel optionsPanel;
     Visualization visualization;
 
+    Rectangle newRectangle;
+    glm::vec2 newRectangleFirstCorner;
+
     Model model;
+
+    [[nodiscard]]
+    glm::vec2 ScreenPositionToVisualizationScene(const glm::vec2& screenPosition) const;
 };

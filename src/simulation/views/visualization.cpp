@@ -13,7 +13,7 @@ Visualization::Visualization(const int xResolution, const int yResolution):
 }
 
 
-void Visualization::Render() const
+void Visualization::Render()
 {
     ImGui::Begin(WindowName());
 
@@ -29,6 +29,24 @@ void Visualization::Render() const
 
     const uint64_t textureID = framebuffer.GetColorTextureId();
     const ImVec2 size = ImGui::GetContentRegionAvail();
+
     ImGui::Image(textureID, ImVec2{ size.x, size.y }, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+
+    ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 vMax = ImGui::GetWindowContentRegionMax();
+
+    vMin.x += ImGui::GetWindowPos().x;
+    vMin.y += ImGui::GetWindowPos().y;
+    vMax.x += ImGui::GetWindowPos().x;
+    vMax.y += ImGui::GetWindowPos().y;
+
+    upperLeftCorner.x = vMin.x;
+    upperLeftCorner.y = vMin.y;
+
+    lowerRightCorner.x = vMax.x;
+    lowerRightCorner.y = vMax.y;
+
+    mouseIsHovering = ImGui::IsItemHovered();
+
     ImGui::End();
 }
