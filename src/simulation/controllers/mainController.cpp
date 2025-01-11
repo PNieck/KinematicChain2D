@@ -24,6 +24,10 @@ MainController::MainController(GLFWwindow *window):
     ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
 #endif
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    constexpr  ChainParameters initParams;
+    visualization.SetChainParameters(initParams);
+    model.SetChainParameters(initParams);
 }
 
 
@@ -55,11 +59,16 @@ void MainController::MouseClicked(const MouseButton button)
 {
     mouseState.ButtonClicked(button);
 
-    if (button == Left && visualization.IsMouseHovering()) {
+    if (button == Left && visualization.IsMouseOver()) {
         newRectangleFirstCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
 
         newRectangle = Rectangle(newRectangleFirstCorner, 0.f, 0.f);
         visualization.AddRectangle(newRectangle);
+    }
+
+    if (button == Right && visualization.IsMouseOver()) {
+        const glm::vec2 target = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+        visualization.UpdateChain(model.TryToReach(target));
     }
 }
 
@@ -68,7 +77,7 @@ void MainController::MouseMoved(const float x, const float y)
 {
     mouseState.Moved(x, y);
 
-    if (mouseState.IsButtonClicked(Left) && visualization.IsMouseHovering()) {
+    if (mouseState.IsButtonClicked(Left) && visualization.IsMouseOver()) {
         const glm::vec2 newCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
 
         const Rectangle updatedRectangle(newRectangleFirstCorner, newCorner);
@@ -79,6 +88,11 @@ void MainController::MouseMoved(const float x, const float y)
         );
 
         newRectangle = updatedRectangle;
+    }
+
+    if (mouseState.IsButtonClicked(Right) && visualization.IsMouseOver()) {
+        const glm::vec2 target = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+        visualization.UpdateChain(model.TryToReach(target));
     }
 }
 

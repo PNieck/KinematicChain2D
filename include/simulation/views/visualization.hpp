@@ -12,6 +12,9 @@ class Visualization {
 public:
     Visualization(int xResolution, int yResolution);
 
+    void UpdateChain(const PossibleChainStates& states)
+        { chain.Update(states); }
+
     void Render();
 
     void SetChainParameters(const ChainParameters& parameters)
@@ -32,7 +35,7 @@ public:
         { return "Visualization"; }
 
     [[nodiscard]]
-    bool IsMouseHovering() const
+    bool IsMouseOver() const
         { return mouseIsHovering; }
 
     [[nodiscard]]

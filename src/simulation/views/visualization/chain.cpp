@@ -59,11 +59,11 @@ void Chain::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
     const float l1 = parameters.l1;
     const float l2 = parameters.l2;
 
-    const std::vector vertices = {
-        Vertex2D(0.f, 0.f),
-        Vertex2D(l1 * Cos(state.alpha), l2 * Sin(state.alpha)),
-        Vertex2D(l1 * Cos(state.alpha + state.beta), l2 * Sin(state.alpha + state.beta))
-    };
+    std::vector<Vertex2D> vertices(3);
+    vertices[0] = Vertex2D(0.f, 0.f);
+    vertices[1] = Vertex2D(l1 * Cos(state.alpha), l1 * Sin(state.alpha));
+    vertices[2] = vertices[1].position +
+        Vertex2D(l2 * Cos(state.alpha + state.beta), l2 * Sin(state.alpha + state.beta)).position;
 
     const std::vector<uint32_t> indices = { 0, 1, 2 };
 

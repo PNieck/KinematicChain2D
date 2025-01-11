@@ -26,6 +26,9 @@ public:
     Angle operator+(const Angle& other) const
         { return Angle(radians + other.radians); }
 
+    Angle operator-(const Angle& other) const
+        { return Angle(radians - other.radians); }
+
 private:
     explicit constexpr Angle(const float radians): radians(radians) {}
 
@@ -42,3 +45,9 @@ inline float Sin(const Angle angle)
 
 inline float Cos(const Angle angle)
     { return std::cos(angle.ToRadians()); }
+
+inline Angle Atan2(const float y, const float x)
+    { return Angle::FromRadians(std::atan2(y, x)); }
+
+inline Angle Acos(const float val)
+    { return Angle::FromRadians(std::acos(val)); }
