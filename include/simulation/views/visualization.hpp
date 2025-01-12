@@ -2,7 +2,7 @@
 
 #include "visualization/shaders/sceneShader.hpp"
 #include "visualization/framebuffer.hpp"
-#include "visualization/chain.hpp"
+#include "visualization/chainRenderer.hpp"
 #include "visualization/rectanglesRenderer.hpp"
 
 #include "../model/chainParameters.hpp"
@@ -58,7 +58,7 @@ private:
     Framebuffer framebuffer;
     SceneShader sceneShader;
 
-    Chain chain;
+    ChainRenderer chain;
     RectanglesRenderer rectanglesRenderer;
     CoordinateSystem coordinateSystem;
 

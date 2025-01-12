@@ -16,4 +16,6 @@ struct ChainState {
 
     bool operator==(const ChainState& other) const
         { return alpha == other.alpha && beta == other.beta; }
+
+
 };

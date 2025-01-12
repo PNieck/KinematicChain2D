@@ -1,11 +1,40 @@
 #include "simulation/model/model.hpp"
 
+#include "simulation/utils/intersections.hpp"
+#include "simulation/model/kinematicChain.hpp"
+
 #include <glm/glm.hpp>
+
+#include <ranges>
+#include <stdexcept>
+
+
+PossibleChainStates Model::TryToReach(const glm::vec2 &target) const
+{
+    auto states = InverseKinematics(target);
+
+    return std::visit(
+        [this] (const auto& s) { return CollideWithRectangles(s); }, states
+    );
+}
 
 
 void Model::AddRectangle(const Rectangle &rectangle)
 {
     rectangles.push_back(rectangle);
+}
+
+
+void Model::EditRectangle(const Rectangle &oldRectangle, const Rectangle &newRectangle)
+{
+    for (auto& rect : std::ranges::views::reverse(rectangles)) {
+        if (rect == oldRectangle) {
+            rect = newRectangle;
+            return;
+        }
+    }
+
+    throw std::runtime_error("Cannot find rectangle to modify");
 }
 
 
@@ -32,4 +61,48 @@ PossibleChainStates Model::InverseKinematics(const glm::vec2 &endPoint) const
         a+b, Angle::FromDegrees(180)+c,
         a-b, Angle::FromDegrees(180)-c
     );
+}
+
+
+PossibleChainStates Model::CollideWithRectangles(const NoPossibleChainStates &s) const
+    { return s; }
+
+
+PossibleChainStates Model::CollideWithRectangles(const OnePossibleChainState &s) const
+{
+    if (CollidesWithRectangles(s.state))
+        return NoPossibleChainStates();
+
+    return s;
+}
+
+
+PossibleChainStates Model::CollideWithRectangles(const TwoPossibleChainStates &s) const
+{
+    const bool firstCollides = CollidesWithRectangles(s.state1);
+    const bool secondCollides = CollidesWithRectangles(s.state2);
+
+    if (!firstCollides && !secondCollides)
+        return s;
+
+    if (!firstCollides)
+        return OnePossibleChainState(s.state1);
+
+    if (!secondCollides)
+        return OnePossibleChainState(s.state2);
+
+    return NoPossibleChainStates();
+}
+
+
+bool Model::CollidesWithRectangles(const ChainState &state) const {
+    const KinematicChain chain(chainParameters, state);
+
+    for (const auto& rect : rectangles) {
+        if (LineSegmentRectangleIntersects(rect, chain.GetBase(), chain.GetJoint()) ||
+            LineSegmentRectangleIntersects(rect, chain.GetJoint(), chain.GetEnd()))
+            return true;
+    }
+
+    return false;
 }

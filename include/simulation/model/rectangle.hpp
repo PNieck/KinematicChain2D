@@ -33,6 +33,8 @@ public:
     float Height() const
         { return height; }
 
+    bool operator==(const Rectangle& other) const;
+
 private:
     glm::vec2 lowerLeftCorner;
     float width, height;

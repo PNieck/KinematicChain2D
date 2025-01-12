@@ -9,8 +9,8 @@
 
 class Model {
 public:
-    PossibleChainStates TryToReach(const glm::vec2& target) const
-        { return InverseKinematics(target); }
+    [[nodiscard]]
+    PossibleChainStates TryToReach(const glm::vec2& target) const;
 
     void SetChainParameters(const ChainParameters& params)
         { chainParameters = params; }
@@ -23,5 +23,16 @@ private:
     std::vector<Rectangle> rectangles;
     ChainParameters chainParameters;
 
+    [[nodiscard]]
     PossibleChainStates InverseKinematics(const glm::vec2& endPoint) const;
+
+    [[nodiscard]]
+    PossibleChainStates CollideWithRectangles(const NoPossibleChainStates& s) const;
+    [[nodiscard]]
+    PossibleChainStates CollideWithRectangles(const OnePossibleChainState& s) const;
+    [[nodiscard]]
+    PossibleChainStates CollideWithRectangles(const TwoPossibleChainStates& s) const;
+
+    [[nodiscard]]
+    bool CollidesWithRectangles(const ChainState& state) const;
 };

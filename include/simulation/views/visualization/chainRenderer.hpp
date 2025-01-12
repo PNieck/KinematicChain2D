@@ -2,14 +2,13 @@
 
 #include "../../model/chainParameters.hpp"
 #include "../../model/chainState.hpp"
-#include "../../model/coordinateSystem.hpp"
 #include "../../model/possibleChainStates.hpp"
 
 #include "mesh.hpp"
 #include "shaders/sceneShader.hpp"
 
 
-class Chain {
+class ChainRenderer {
 public:
     void SetParameters(const ChainParameters& params)
         { parameters = params; }
@@ -20,7 +19,6 @@ public:
 
 private:
     ChainParameters parameters;
-    ChainState actState;
 
     bool firstConfigurationIsValid = true;
     Mesh firstConfiguration;

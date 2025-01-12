@@ -1,12 +1,14 @@
-#include "simulation/views/visualization/chain.hpp"
+#include "simulation/views/visualization/chainRenderer.hpp"
 
 #include "simulation/views/visualization/vertex.hpp"
+
+#include "simulation/model/kinematicChain.hpp"
 
 #include <vector>
 
 
 
-void Chain::Update(const PossibleChainStates& states)
+void ChainRenderer::Update(const PossibleChainStates& states)
 {
     std::visit(
         [this] (const auto& s) { UpdateMeshes(s); },
@@ -15,7 +17,7 @@ void Chain::Update(const PossibleChainStates& states)
 }
 
 
-void Chain::Render(const SceneShader& shader) const
+void ChainRenderer::Render(const SceneShader& shader) const
 {
     if (!firstConfigurationIsValid && !secondConfigurationIsValid)
         return;
@@ -28,14 +30,14 @@ void Chain::Render(const SceneShader& shader) const
 }
 
 
-void Chain::UpdateMeshes([[maybe_unused]] const NoPossibleChainStates &states)
+void ChainRenderer::UpdateMeshes([[maybe_unused]] const NoPossibleChainStates &states)
 {
     firstConfigurationIsValid = false;
     secondConfigurationIsValid = false;
 }
 
 
-void Chain::UpdateMeshes(const OnePossibleChainState &state)
+void ChainRenderer::UpdateMeshes(const OnePossibleChainState &state)
 {
     firstConfigurationIsValid = true;
     secondConfigurationIsValid = false;
@@ -44,7 +46,7 @@ void Chain::UpdateMeshes(const OnePossibleChainState &state)
 }
 
 
-void Chain::UpdateMeshes(const TwoPossibleChainStates &states)
+void ChainRenderer::UpdateMeshes(const TwoPossibleChainStates &states)
 {
     firstConfigurationIsValid = true;
     secondConfigurationIsValid = true;
@@ -54,16 +56,15 @@ void Chain::UpdateMeshes(const TwoPossibleChainStates &states)
 }
 
 
-void Chain::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
+void ChainRenderer::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
 {
-    const float l1 = parameters.l1;
-    const float l2 = parameters.l2;
+    const KinematicChain chain(parameters, state);
 
-    std::vector<Vertex2D> vertices(3);
-    vertices[0] = Vertex2D(0.f, 0.f);
-    vertices[1] = Vertex2D(l1 * Cos(state.alpha), l1 * Sin(state.alpha));
-    vertices[2] = vertices[1].position +
-        Vertex2D(l2 * Cos(state.alpha + state.beta), l2 * Sin(state.alpha + state.beta)).position;
+    const std::vector<Vertex2D> vertices {
+        chain.GetBase(),
+        chain.GetJoint(),
+        chain.GetEnd()
+    };
 
     const std::vector<uint32_t> indices = { 0, 1, 2 };
 
@@ -71,7 +72,7 @@ void Chain::UpdateSingleMesh(Mesh &mesh, const ChainState &state) const
 }
 
 
-void Chain::RenderSingleMesh(const Mesh &mesh, const SceneShader &shader, const glm::vec4 &color) {
+void ChainRenderer::RenderSingleMesh(const Mesh &mesh, const SceneShader &shader, const glm::vec4 &color) {
     shader.SetColor(color);
     mesh.Use();
     glDrawElements(mesh.GetType(), static_cast<GLsizei>(mesh.GetElementsCnt()), GL_UNSIGNED_INT, nullptr);

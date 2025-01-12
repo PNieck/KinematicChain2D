@@ -64,6 +64,7 @@ void MainController::MouseClicked(const MouseButton button)
 
         newRectangle = Rectangle(newRectangleFirstCorner, 0.f, 0.f);
         visualization.AddRectangle(newRectangle);
+        model.AddRectangle(newRectangle);
     }
 
     if (button == Right && visualization.IsMouseOver()) {
@@ -82,10 +83,8 @@ void MainController::MouseMoved(const float x, const float y)
 
         const Rectangle updatedRectangle(newRectangleFirstCorner, newCorner);
 
-        visualization.EditRectangle(
-            newRectangle,
-            updatedRectangle
-        );
+        visualization.EditRectangle(newRectangle, updatedRectangle);
+        model.EditRectangle(newRectangle, updatedRectangle);
 
         newRectangle = updatedRectangle;
     }
