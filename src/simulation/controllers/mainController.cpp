@@ -8,7 +8,8 @@
 MainController::MainController(GLFWwindow *window):
     optionsPanel(*this), visualization(1280, 920),
     newRectangle(),
-    newRectangleFirstCorner(0.f)
+    newRectangleFirstCorner(0.f),
+    actTarget(0.5f, 0.5f)
 {
     const auto glsl_version = "#version 410";
     IMGUI_CHECKVERSION();
@@ -28,6 +29,8 @@ MainController::MainController(GLFWwindow *window):
     constexpr  ChainParameters initParams;
     visualization.SetChainParameters(initParams);
     model.SetChainParameters(initParams);
+
+    visualization.UpdateChain(model.TryToReach(actTarget));
 }
 
 
@@ -59,17 +62,18 @@ void MainController::MouseClicked(const MouseButton button)
 {
     mouseState.ButtonClicked(button);
 
-    if (button == Left && visualization.IsMouseOver()) {
+    if (button == Right && visualization.IsMouseOver()) {
         newRectangleFirstCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
 
         newRectangle = Rectangle(newRectangleFirstCorner, 0.f, 0.f);
         visualization.AddRectangle(newRectangle);
         model.AddRectangle(newRectangle);
+        visualization.UpdateChain(model.TryToReach(actTarget));
     }
 
-    if (button == Right && visualization.IsMouseOver()) {
-        const glm::vec2 target = ScreenPositionToVisualizationScene(mouseState.PositionGet());
-        visualization.UpdateChain(model.TryToReach(target));
+    if (button == Left && visualization.IsMouseOver()) {
+        actTarget = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+        visualization.UpdateChain(model.TryToReach(actTarget));
     }
 }
 
@@ -78,7 +82,7 @@ void MainController::MouseMoved(const float x, const float y)
 {
     mouseState.Moved(x, y);
 
-    if (mouseState.IsButtonClicked(Left) && visualization.IsMouseOver()) {
+    if (mouseState.IsButtonClicked(Right) && visualization.IsMouseOver()) {
         const glm::vec2 newCorner = ScreenPositionToVisualizationScene(mouseState.PositionGet());
 
         const Rectangle updatedRectangle(newRectangleFirstCorner, newCorner);
@@ -87,11 +91,13 @@ void MainController::MouseMoved(const float x, const float y)
         model.EditRectangle(newRectangle, updatedRectangle);
 
         newRectangle = updatedRectangle;
+
+        visualization.UpdateChain(model.TryToReach(actTarget));
     }
 
-    if (mouseState.IsButtonClicked(Right) && visualization.IsMouseOver()) {
-        const glm::vec2 target = ScreenPositionToVisualizationScene(mouseState.PositionGet());
-        visualization.UpdateChain(model.TryToReach(target));
+    if (mouseState.IsButtonClicked(Left) && visualization.IsMouseOver()) {
+        actTarget = ScreenPositionToVisualizationScene(mouseState.PositionGet());
+        visualization.UpdateChain(model.TryToReach(actTarget));
     }
 }
 
@@ -106,6 +112,15 @@ void MainController::ScrollMoved(const int offset)
     if (val < 0.0f) {
         val = -1.0f / val;
     }
+}
+
+
+void MainController::SetChainParameters(const ChainParameters &params)
+{
+    visualization.SetChainParameters(params);
+    model.SetChainParameters(params);
+
+    visualization.UpdateChain(model.TryToReach(actTarget));
 }
 
 

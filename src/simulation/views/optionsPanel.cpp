@@ -11,38 +11,32 @@ OptionsPanel::OptionsPanel(MainController &controller):
 }
 
 
-void OptionsPanel::Render()
+void OptionsPanel::Render() const
 {
     ImGui::Begin("Options");
 
-    RenderStartStopButton(true);
+    RenderChainOptions();
 
     ImGui::End();
 }
 
 
-void OptionsPanel::RenderStartStopButton(const bool simRuns)
+void OptionsPanel::RenderChainOptions() const
 {
-    ImGui::BeginDisabled(simRuns);
-    if (ImGui::Button("Start")) {
+    ImGui::SeparatorText("Kinematic chain options");
 
-    }
-    ImGui::EndDisabled();
+    auto params = controller.GetChainParameters();
+    bool paramsChanged = false;
 
-    ImGui::SameLine();
+    ImGui::Text("Fist section length");
+    paramsChanged |= ImGui::DragFloat("##l1", &params.l1, 0.1f, 0.01f);
 
-    ImGui::BeginDisabled(!simRuns);
-    if (ImGui::Button("Stop")) {
+    ImGui::Text("Second section length");
+    paramsChanged |= ImGui::DragFloat("##l2", &params.l2, 0.1f, 0.01f);
 
-    }
-    ImGui::EndDisabled();
-
-    ImGui::BeginDisabled(simRuns);
-    if (ImGui::Button("Update")) {
-
-    }
-
-    if (ImGui::Button("Reset")) {
-    }
-    ImGui::EndDisabled();
+    if (paramsChanged)
+        controller.SetChainParameters(params);
 }
+
+
+

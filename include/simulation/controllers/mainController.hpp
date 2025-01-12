@@ -12,8 +12,6 @@
 #include "../model/model.hpp"
 #include "../model/rectangle.hpp"
 
-#include <tuple>
-
 
 class MainController {
 public:
@@ -30,6 +28,12 @@ public:
     void MouseMoved(float x, float y);
     void ScrollMoved(int offset);
 
+    [[nodiscard]]
+    const ChainParameters& GetChainParameters() const
+        { return visualization.GetChainParameters(); }
+
+    void SetChainParameters(const ChainParameters& params);
+
 private:
     MouseState mouseState;
 
@@ -39,6 +43,8 @@ private:
 
     Rectangle newRectangle;
     glm::vec2 newRectangleFirstCorner;
+
+    glm::vec2 actTarget;
 
     Model model;
 

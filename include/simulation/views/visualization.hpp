@@ -20,6 +20,10 @@ public:
     void SetChainParameters(const ChainParameters& parameters)
         { chain.SetParameters(parameters); }
 
+    [[nodiscard]]
+    const ChainParameters& GetChainParameters() const
+        { return chain.GetParameters(); };
+
     void AddRectangle(const Rectangle& rectangle)
         { rectanglesRenderer.AddRectangle(rectangle); }
 

@@ -7,7 +7,7 @@ class OptionsPanel {
 public:
     explicit OptionsPanel(MainController& controller);
 
-    void Render();
+    void Render() const;
 
     [[nodiscard]]
     static const char* WindowName()
@@ -16,5 +16,5 @@ public:
 private:
     MainController& controller;
 
-    void RenderStartStopButton(bool simRuns);
+    void RenderChainOptions() const;
 };

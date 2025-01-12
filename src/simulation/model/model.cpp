@@ -7,6 +7,7 @@
 
 #include <ranges>
 #include <stdexcept>
+#include <algorithm>
 
 
 PossibleChainStates Model::TryToReach(const glm::vec2 &target) const
@@ -98,11 +99,8 @@ PossibleChainStates Model::CollideWithRectangles(const TwoPossibleChainStates &s
 bool Model::CollidesWithRectangles(const ChainState &state) const {
     const KinematicChain chain(chainParameters, state);
 
-    for (const auto& rect : rectangles) {
-        if (LineSegmentRectangleIntersects(rect, chain.GetBase(), chain.GetJoint()) ||
-            LineSegmentRectangleIntersects(rect, chain.GetJoint(), chain.GetEnd()))
-            return true;
-    }
-
-    return false;
+    return std::ranges::any_of(rectangles, [&chain](const auto& rect) {
+        return LineSegmentRectangleIntersects(rect, chain.GetBase(), chain.GetJoint()) ||
+               LineSegmentRectangleIntersects(rect, chain.GetJoint(), chain.GetEnd());
+    });
 }

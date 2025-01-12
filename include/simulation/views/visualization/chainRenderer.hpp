@@ -13,6 +13,10 @@ public:
     void SetParameters(const ChainParameters& params)
         { parameters = params; }
 
+    [[nodiscard]]
+    const ChainParameters& GetParameters() const
+        { return parameters; }
+
     void Update(const PossibleChainStates& states);
 
     void Render(const SceneShader& shader) const;
