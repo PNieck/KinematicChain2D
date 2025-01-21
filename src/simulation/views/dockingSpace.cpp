@@ -2,8 +2,9 @@
 
 #include "imgui_internal.h"
 
-#include "simulation/views/visualization.hpp"
+#include "simulation/views/sceneVisualization.hpp"
 #include "simulation//views/optionsPanel.hpp"
+#include "simulation/views/configurationSpaceVisualization.hpp"
 
 
 DockingSpace::DockingSpace()
@@ -49,9 +50,11 @@ void DockingSpace::Render() const
             ImGui::DockBuilderSetNodeSize(dockSpaceId, viewport->Size);
 
             const auto rightDockId = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.25f, nullptr, &dockSpaceId);
+            const auto rightDock2Id = ImGui::DockBuilderSplitNode(dockSpaceId, ImGuiDir_Right, 0.5f, nullptr, &dockSpaceId);
 
             ImGui::DockBuilderDockWindow(OptionsPanel::WindowName(), rightDockId);
-            ImGui::DockBuilderDockWindow(Visualization::WindowName(), dockSpaceId);
+            ImGui::DockBuilderDockWindow(ConfigurationSpaceVisualization::WindowName(), rightDock2Id);
+            ImGui::DockBuilderDockWindow(SceneVisualization::WindowName(), dockSpaceId);
 
             ImGui::DockBuilderFinish(dockSpaceId);
         }

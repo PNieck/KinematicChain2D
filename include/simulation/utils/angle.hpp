@@ -29,6 +29,15 @@ public:
     Angle operator-(const Angle& other) const
         { return Angle(radians - other.radians); }
 
+    Angle operator/(const float c) const
+        { return Angle(radians/c); }
+
+    friend Angle operator*(const float c, const Angle& a)
+        { return Angle(a.radians*c); }
+
+    friend Angle operator*(const Angle& a, const float c)
+        { return c * a; }
+
 private:
     explicit constexpr Angle(const float radians): radians(radians) {}
 

@@ -7,10 +7,13 @@
 #include <vector>
 
 
-class Model {
+class ObstaclesManager {
 public:
     [[nodiscard]]
     PossibleChainStates TryToReach(const glm::vec2& target) const;
+
+    [[nodiscard]]
+    bool CollidesWithRectangles(const ChainState& state) const;
 
     void SetChainParameters(const ChainParameters& params)
         { chainParameters = params; }
@@ -18,6 +21,9 @@ public:
     void AddRectangle(const Rectangle& rectangle);
 
     void EditRectangle(const Rectangle& oldRectangle, const Rectangle& newRectangle);
+
+    size_t NumberOfObstacles() const
+        { return rectangles.size(); }
 
 private:
     std::vector<Rectangle> rectangles;
@@ -32,7 +38,4 @@ private:
     PossibleChainStates CollideWithRectangles(const OnePossibleChainState& s) const;
     [[nodiscard]]
     PossibleChainStates CollideWithRectangles(const TwoPossibleChainStates& s) const;
-
-    [[nodiscard]]
-    bool CollidesWithRectangles(const ChainState& state) const;
 };

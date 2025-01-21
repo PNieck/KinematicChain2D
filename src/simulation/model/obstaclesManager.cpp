@@ -1,4 +1,4 @@
-#include "simulation/model/model.hpp"
+#include "simulation/model/obstaclesManager.hpp"
 
 #include "simulation/utils/intersections.hpp"
 #include "simulation/model/kinematicChain.hpp"
@@ -10,7 +10,7 @@
 #include <algorithm>
 
 
-PossibleChainStates Model::TryToReach(const glm::vec2 &target) const
+PossibleChainStates ObstaclesManager::TryToReach(const glm::vec2 &target) const
 {
     auto states = InverseKinematics(target);
 
@@ -20,13 +20,13 @@ PossibleChainStates Model::TryToReach(const glm::vec2 &target) const
 }
 
 
-void Model::AddRectangle(const Rectangle &rectangle)
+void ObstaclesManager::AddRectangle(const Rectangle &rectangle)
 {
     rectangles.push_back(rectangle);
 }
 
 
-void Model::EditRectangle(const Rectangle &oldRectangle, const Rectangle &newRectangle)
+void ObstaclesManager::EditRectangle(const Rectangle &oldRectangle, const Rectangle &newRectangle)
 {
     for (auto& rect : std::ranges::views::reverse(rectangles)) {
         if (rect == oldRectangle) {
@@ -39,7 +39,7 @@ void Model::EditRectangle(const Rectangle &oldRectangle, const Rectangle &newRec
 }
 
 
-PossibleChainStates Model::InverseKinematics(const glm::vec2 &endPoint) const
+PossibleChainStates ObstaclesManager::InverseKinematics(const glm::vec2 &endPoint) const
 {
     const float len = length(endPoint);
 
@@ -65,11 +65,11 @@ PossibleChainStates Model::InverseKinematics(const glm::vec2 &endPoint) const
 }
 
 
-PossibleChainStates Model::CollideWithRectangles(const NoPossibleChainStates &s) const
+PossibleChainStates ObstaclesManager::CollideWithRectangles(const NoPossibleChainStates &s) const
     { return s; }
 
 
-PossibleChainStates Model::CollideWithRectangles(const OnePossibleChainState &s) const
+PossibleChainStates ObstaclesManager::CollideWithRectangles(const OnePossibleChainState &s) const
 {
     if (CollidesWithRectangles(s.state))
         return NoPossibleChainStates();
@@ -78,7 +78,7 @@ PossibleChainStates Model::CollideWithRectangles(const OnePossibleChainState &s)
 }
 
 
-PossibleChainStates Model::CollideWithRectangles(const TwoPossibleChainStates &s) const
+PossibleChainStates ObstaclesManager::CollideWithRectangles(const TwoPossibleChainStates &s) const
 {
     const bool firstCollides = CollidesWithRectangles(s.state1);
     const bool secondCollides = CollidesWithRectangles(s.state2);
@@ -96,7 +96,7 @@ PossibleChainStates Model::CollideWithRectangles(const TwoPossibleChainStates &s
 }
 
 
-bool Model::CollidesWithRectangles(const ChainState &state) const {
+bool ObstaclesManager::CollidesWithRectangles(const ChainState &state) const {
     const KinematicChain chain(chainParameters, state);
 
     return std::ranges::any_of(rectangles, [&chain](const auto& rect) {

@@ -8,9 +8,9 @@
 #include "../model/chainParameters.hpp"
 
 
-class Visualization {
+class SceneVisualization {
 public:
-    Visualization(int xResolution, int yResolution);
+    SceneVisualization(int xResolution, int yResolution);
 
     void UpdateChain(const PossibleChainStates& states)
         { chain.Update(states); }
@@ -36,7 +36,7 @@ public:
 
     [[nodiscard]]
     static const char* WindowName()
-        { return "Visualization"; }
+        { return "Scene sceneVisualization"; }
 
     [[nodiscard]]
     bool IsMouseOver() const

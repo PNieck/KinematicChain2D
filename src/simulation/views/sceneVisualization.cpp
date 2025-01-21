@@ -1,9 +1,9 @@
-#include "simulation/views/visualization.hpp"
+#include "simulation/views/sceneVisualization.hpp"
 
-#include "imgui.h"
+#include <imgui.h>
 
 
-Visualization::Visualization(const int xResolution, const int yResolution):
+SceneVisualization::SceneVisualization(const int xResolution, const int yResolution):
     framebuffer(xResolution, yResolution)
 {
     glViewport(0, 0, xResolution, yResolution);
@@ -13,7 +13,7 @@ Visualization::Visualization(const int xResolution, const int yResolution):
 }
 
 
-void Visualization::Render()
+void SceneVisualization::Render()
 {
     ImGui::Begin(WindowName());
 
